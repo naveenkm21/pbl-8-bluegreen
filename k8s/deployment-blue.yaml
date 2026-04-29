@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pbl8-app-blue
+  labels:
+    app: pbl8-app
+    color: blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pbl8-app
+      color: blue
+  template:
+    metadata:
+      labels:
+        app: pbl8-app
+        color: blue
+    spec:
+      containers:
+        - name: pbl8-app
+          image: REPLACE_ME_IMAGE
+          ports:
+            - containerPort: 5000
+          env:
+            - name: APP_COLOR
+              value: "blue"
+            - name: APP_VERSION
+              value: "v1"
+          readinessProbe:
+            httpGet: { path: /health, port: 5000 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /health, port: 5000 }
+            initialDelaySeconds: 15
+            periodSeconds: 20
