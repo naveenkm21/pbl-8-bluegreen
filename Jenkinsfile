@@ -120,7 +120,7 @@ pipeline {
                 sh '''
                     sleep 2
                     RESULT=$(kubectl exec deployment/app-green -- \
-                        python -c "import urllib.request; print(urllib.request.urlopen('http://${SERVICE_NAME}.default.svc.cluster.local/version').read().decode())")
+                        python -c "import urllib.request; print(urllib.request.urlopen('http://${SERVICE_NAME}.default.svc.cluster.local:${NODE_PORT}/version').read().decode())")
                     echo "Public /version response: $RESULT"
                     echo "$RESULT" | grep -q '"version":"green"' || { echo "Verify FAILED"; exit 1; }
                     echo "PUBLIC traffic now served by GREEN. Blue is kept warm for instant rollback."
