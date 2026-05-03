@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero text-center">
+  <div class="container">
+    <h1 class="mb-3">Ship Faster. <span class="text-warning">Never Go Down.</span></h1>
+    <p class="lead mb-4">Zero-downtime blue-green deployments powered by Jenkins, Docker, and Kubernetes.</p>
+    <p>
+      <span class="version-badge version-{{ version }}">
+        <i class="bi bi-broadcast"></i> Currently Live: {{ version|upper }} &mdash; build #{{ build }}
+      </span>
+    </p>
+    <div class="mt-4">
+      <a href="/products" class="btn btn-light btn-lg me-2"><i class="bi bi-grid"></i> Browse Products</a>
+      <a href="/version"  class="btn btn-outline-light btn-lg"><i class="bi bi-code-slash"></i> /version API</a>
+    </div>
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="glass-card p-4 h-100">
+        <i class="bi bi-shield-check fs-1 text-warning"></i>
+        <h4 class="mt-3">Zero Downtime</h4>
+        <p>Traffic switches instantly between blue and green pods. Users never see a 5xx.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="glass-card p-4 h-100">
+        <i class="bi bi-arrow-counterclockwise fs-1 text-warning"></i>
+        <h4 class="mt-3">Instant Rollback</h4>
+        <p>The previous color stays warm. Roll back with one <code>kubectl patch</code>.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="glass-card p-4 h-100">
+        <i class="bi bi-cpu fs-1 text-warning"></i>
+        <h4 class="mt-3">Automated Pipeline</h4>
+        <p>Jenkins builds, tests, deploys green, smoke-tests, and switches traffic — fully hands-off.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

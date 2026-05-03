@@ -1,16 +1,17 @@
-# Public service — selector.color is patched by the pipeline to switch traffic.
 apiVersion: v1
 kind: Service
 metadata:
-  name: pbl8-app-svc
+  name: myapp-service
   labels:
-    app: pbl8-app
+    app: myapp
 spec:
   type: NodePort
   selector:
-    app: pbl8-app
-    color: blue        # <-- ACTIVE color; flipped to green on cutover
+    app: myapp
+    version: blue   # <-- traffic-routing label, patched by Jenkins to switch colors
   ports:
-    - port: 80
+    - name: http
+      protocol: TCP
+      port: 80
       targetPort: 5000
-      nodePort: 30080
+      nodePort: 30008
