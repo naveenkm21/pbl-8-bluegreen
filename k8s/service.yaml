@@ -5,13 +5,15 @@ metadata:
   labels:
     app: myapp
 spec:
-  type: NodePort
+  # LoadBalancer works on Docker Desktop K8s — exposed at http://localhost:30008
+  # and routes through real kube-proxy, so selector changes take effect instantly.
+  type: LoadBalancer
   selector:
     app: myapp
     version: blue   # <-- traffic-routing label, patched by Jenkins to switch colors
   ports:
     - name: http
       protocol: TCP
-      port: 80
-      targetPort: 5000
-      nodePort: 30008
+      port: 30008      # exposed host port
+      targetPort: 5000 # container port
+      nodePort: 30008  # also keeps NodePort for compatibility
