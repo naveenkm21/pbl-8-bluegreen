@@ -1,0 +1,13 @@
+{
+  "name": "docs",
+  "version": "1.0.0",
+  "description": "Lab report builder for PBL-8 Blue-Green Deployment",
+  "main": "build-lab-doc.js",
+  "scripts": {
+    "build": "node build-lab-doc.js"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "docx": "^9.6.1"
+  }
+}
