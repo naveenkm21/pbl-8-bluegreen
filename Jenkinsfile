@@ -89,16 +89,12 @@ pipeline {
         stage('Smoke Test GREEN') {
             when { expression { return !params.ROLLBACK } }
             steps {
-                // Run curl from INSIDE the cluster against a green pod IP — no port-forward needed.
+                // Exec into the green pod itself (no new pod, no image pull) — fast.
                 sh '''
                     set -e
-                    GREEN_IP=$(kubectl get pods -l app=myapp,version=green \
-                                -o jsonpath='{.items[0].status.podIP}')
-                    echo "Smoke testing green pod IP: $GREEN_IP"
-
-                    RESULT=$(kubectl run smoke-${BUILD_NUMBER} --rm -i --restart=Never \
-                                --image=curlimages/curl:latest --quiet -- \
-                                curl -sf http://${GREEN_IP}:5000/version)
+                    echo "Smoke testing green via kubectl exec ..."
+                    RESULT=$(kubectl exec deployment/app-green -- \
+                        python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:5000/version').read().decode())")
                     echo "Response: $RESULT"
                     echo "$RESULT" | grep -q '"version":"green"' || { echo "Smoke FAILED"; exit 1; }
                     echo "Smoke test PASSED"
@@ -122,10 +118,9 @@ pipeline {
             when { expression { return !params.ROLLBACK } }
             steps {
                 sh '''
-                    sleep 3
-                    RESULT=$(kubectl run verify-${BUILD_NUMBER} --rm -i --restart=Never \
-                                --image=curlimages/curl:latest --quiet -- \
-                                curl -sf http://${SERVICE_NAME}.default.svc.cluster.local/version)
+                    sleep 2
+                    RESULT=$(kubectl exec deployment/app-green -- \
+                        python -c "import urllib.request; print(urllib.request.urlopen('http://${SERVICE_NAME}.default.svc.cluster.local/version').read().decode())")
                     echo "Public /version response: $RESULT"
                     echo "$RESULT" | grep -q '"version":"green"' || { echo "Verify FAILED"; exit 1; }
                     echo "PUBLIC traffic now served by GREEN. Blue is kept warm for instant rollback."
